@@ -20,13 +20,13 @@ local jobs = {
         }),
 
     hadolint: orbs.docker.jobs_.hadolint,
-    hello: c.job("hello world")
+    hello: c.job("hello")
         .withStep(
             c.steps.run() {
                 command_:: 'echo "hello world"'
             },
         ),
-    goodbye: c.job("goodbye world")
+    goodbye: c.job("goodbye")
         .withStep(
             c.steps.run() {
                 command_:: 'echo "goodbye world"'

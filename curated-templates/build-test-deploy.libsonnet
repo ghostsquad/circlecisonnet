@@ -16,16 +16,16 @@ local c = import "circle.libsonnet";
             }),
 
         hadolint: orbs.docker.jobs_.hadolint,
-        hello: c.job("hello world")
+        hello: c.job("hello")
             .withStep(
                 c.steps.run() {
-                    command_:: 'echo "hello world"'
+                    command_:: 'echo "hello %s"' % [$.params.name],
                 },
             ),
-        goodbye: c.job("goodbye world")
+        goodbye: c.job("goodbye")
             .withStep(
                 c.steps.run() {
-                    command_:: 'echo "goodbye world"'
+                    command_:: 'echo "goodbye %s"' % [$.params.name],
                 },
             ),
     },

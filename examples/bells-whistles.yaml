@@ -4,12 +4,12 @@ jobs:
     - checkout: {}
     - docker/build:
         debug: true
-  goodbye world:
+  goodbye:
     steps:
     - run:
         command: echo "goodbye world"
   hadolint: {}
-  hello world:
+  hello:
     steps:
     - run:
         command: echo "hello world"
@@ -21,11 +21,11 @@ workflows:
     jobs:
     - docker-build-only:
         requires:
-        - hello world
+        - hello
         - hadolint
-    - goodbye world:
+    - goodbye:
         requires:
         - hadolint
         - docker-build-only
     - hadolint: {}
-    - hello world: {}
+    - hello: {}
