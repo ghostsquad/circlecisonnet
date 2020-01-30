@@ -1,0 +1,31 @@
+jobs:
+  docker-build-only:
+    steps:
+    - checkout: {}
+    - docker/build:
+        debug: true
+  goodbye world:
+    steps:
+    - run:
+        command: echo "goodbye world"
+  hadolint: {}
+  hello world:
+    steps:
+    - run:
+        command: echo "hello world"
+orbs:
+  docker: circleci/docker@0.5.20
+version: "2.1"
+workflows:
+  the-big-tamale:
+    jobs:
+    - docker-build-only:
+        requires:
+        - hello world
+        - hadolint
+    - goodbye world:
+        requires:
+        - hadolint
+        - docker-build-only
+    - hadolint: {}
+    - hello world: {}
