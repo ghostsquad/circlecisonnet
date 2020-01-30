@@ -5,17 +5,17 @@ local c = import "circle.libsonnet";
         name: error "name required",
     },
 
-    local jobs = {
+    jobs:: {
         dockerBuild: c.job("docker-build-only")
             .withStep(c.steps.checkout())
-            .withOrbStep(orbs.docker.steps_.build + {
+            .withOrbStep($.orbs.docker.steps_.build + {
                 // https://circleci.com/orbs/registry/orb/circleci/docker#commands-build
                 params_:: {
                     debug: true
                 },
             }),
 
-        hadolint: orbs.docker.jobs_.hadolint,
+        hadolint: $.orbs.docker.jobs_.hadolint,
         hello: c.job("hello")
             .withStep(
                 c.steps.run() {
@@ -30,7 +30,7 @@ local c = import "circle.libsonnet";
             ),
     },
 
-    local orbs = {
+    orbs:: {
         docker: c.orb("docker") {
             publisher_: "circleci",
             name_: "docker",
@@ -41,15 +41,15 @@ local c = import "circle.libsonnet";
 
     workflow():: c.configYaml($.params.name)
         .withWorkflow()
-        .withJob(jobs.hello)
-        .withJob(jobs.hadolint + {
-            requires_: jobs.hello,
+        .withJob($.jobs.hello)
+        .withJob($.jobs.hadolint + {
+            requires_: $.jobs.hello,
         })
-        .withJob(jobs.dockerBuild + {
-            requires_: [ jobs.hello, jobs.hadolint, ]
+        .withJob($.jobs.dockerBuild + {
+            requires_: [ $.jobs.hello, $.jobs.hadolint, ]
         })
-        .withJob(jobs.goodbye + {
-            requires_: [ jobs.hadolint, jobs.dockerBuild],
+        .withJob($.jobs.goodbye + {
+            requires_: [ $.jobs.hadolint, $.jobs.dockerBuild],
         })
 }
 
