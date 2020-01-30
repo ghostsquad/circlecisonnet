@@ -19,7 +19,7 @@
             parentOrb_:: orb,
         },
 
-        withJob(name):: self + {            
+        withJob(name):: self + {
             jobs_+:: {
                 [name]:: orb.__stepOrJob__(name) + {
                     params_:: {},
@@ -218,7 +218,7 @@
         local configYaml = self,
 
         name_:: name,
-        workspaceRoot_:: "/var/circleci",        
+        workspaceRoot_:: "/var/circleci",
 
         version: "2.1",
         jobs: {},
