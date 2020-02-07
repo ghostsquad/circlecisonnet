@@ -1,4 +1,4 @@
-local c = import "circle.libsonnet";
+local c = import "circleci.libsonnet";
 
 {
     params:: {
