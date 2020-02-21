@@ -3,28 +3,28 @@
 
     orb(id):: {
         local orb = self,
-        id_:: id,
+        id:: id,
 
-        publisher_:: error "publisher_ required",
-        name_:: error "name_ required",
-        version_:: error "version_ required",
-        fullName_:: "%s/%s@%s" % [self.publisher_, self.name_, self.version_],
+        publisher:: error "publisher_ required",
+        name:: error "name_ required",
+        version:: error "version_ required",
+        fullName:: "%s/%s@%s" % [self.publisher, self.name, self.version],
 
-        jobs_:: {},
-        steps_:: {},
+        jobs:: {},
+        steps:: {},
 
         __stepOrJob__(name):: {
-            name_:: name,
-            ref_:: "%s/%s" % [orb.id_, name],
-            parentOrb_:: orb,
+            name:: name,
+            ref:: "%s/%s" % [orb.id, name],
+            parentOrb:: orb,
         },
 
         withJob(name):: self + {
-            jobs_+:: {
+            jobs+:: {
                 [name]:: orb.__stepOrJob__(name) + {
-                    params_:: {},
-                    orbs_:: [orb],
-                    __asTopLevel__(): self.params_,
+                    params:: {},
+                    orbs:: [orb],
+                    __asTopLevel__(): self.params,
                     __asWorkflow__(): {},
                 },
             },
@@ -32,9 +32,9 @@
 
         withStep(name):: self + {
             local this = self,
-            steps_+:: {
+            steps+:: {
                 [name]:: orb.__stepOrJob__(name) + {
-                    params_:: {},
+                    params:: {},
                 },
             },
         },
@@ -181,34 +181,34 @@
     job(name):: {
         local this = self,
 
-        name_:: name,
+        name:: name,
         requires_:: null,
         filters_:: null,
-        orbs_:: [],
-        steps_:: [],
+        orbs:: [],
+        steps:: [],
 
         withStep(step):: self + {
-            steps_+:: [step],
+            steps+:: [step],
         },
         withOrbStep(step):: self + {
-            orbs_+:: [step.parentOrb_],
-            steps_+:: [
+            orbs+:: [step.parentOrb],
+            steps+:: [
                 {
-                    [step.ref_]: step.params_
+                    [step.ref]: step.params
                 }
             ],
         },
         __asTopLevel__():: {
-            steps: this.steps_,
+            steps: this.steps,
         },
         __asWorkflow__():: {
             [if this.requires_ == null then null else "requires"]: 
                 if std.type(this.requires_) == "string"
                 then [this.requires_]
                 else if std.type(this.requires_) == "object"
-                then [this.requires_.name_]
+                then [this.requires_.name]
                 else if std.type(this.requires_) == "array"
-                then [ if std.type(i) == "string" then i else i.name_ for i in this.requires_ ]
+                then [ if std.type(i) == "string" then i else i.name for i in this.requires_ ]
                 else error "expected requires_ to be a string, object or array, got %s" % std.type(this.requires_),
             [if this.filters_ == null then null else "filters"]: this.filters_,
         },
@@ -217,8 +217,8 @@
     configYaml(name):: {
         local configYaml = self,
 
-        name_:: name,
-        workspaceRoot_:: "/var/circleci",
+        name:: name,
+        workspaceRoot:: "/var/circleci",
 
         version: "2.1",
         jobs: {},
@@ -226,23 +226,23 @@
         workflows: {},
 
         withWorkflow(name = null):: self + {
-            local nameResolved = if name != null then name else configYaml.name_,
+            local nameResolved = if name != null then name else configYaml.name,
             workflows+: {
                 [nameResolved]+: {
-                    name_:: nameResolved,
+                    name:: nameResolved,
                     jobs_:: {},
                     jobs: $.mapToArray(self.jobs_)
                 },
             },
             withJob(j):: self + {
                 jobs+: {
-                    [j.name_]: j.__asTopLevel__(),
+                    [j.name]: j.__asTopLevel__(),
                 },
-                orbs+: { [i.id_]: i.fullName_ for i in j.orbs_ },
+                orbs+: { [i.id]: i.fullName for i in j.orbs },
                 workflows+: {
                     [nameResolved]+: {
                         jobs_+:: {
-                            [j.name_]: j.__asWorkflow__()
+                            [j.name]: j.__asWorkflow__()
                         },
                     },
                 },

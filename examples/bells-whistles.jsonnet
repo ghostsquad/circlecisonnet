@@ -2,9 +2,9 @@ local c = import "circleci.libsonnet";
 
 local orbs = {
     docker: c.orb("docker") {
-        publisher_: "circleci",
-        name_: "docker",
-        version_: "0.5.20"
+        publisher: "circleci",
+        name: "docker",
+        version: "0.5.20"
     }.withJob("hadolint")
     .withStep("build")
 };
@@ -12,14 +12,14 @@ local orbs = {
 local jobs = {
     dockerBuild: c.job("docker-build-only")
         .withStep(c.steps.checkout())
-        .withOrbStep(orbs.docker.steps_.build + {
+        .withOrbStep(orbs.docker.steps.build + {
             // https://circleci.com/orbs/registry/orb/circleci/docker#commands-build
-            params_:: {
+            params:: {
                 debug: true
             },
         }),
 
-    hadolint: orbs.docker.jobs_.hadolint,
+    hadolint: orbs.docker.jobs.hadolint,
     hello: c.job("hello")
         .withStep(
             c.steps.run() {
