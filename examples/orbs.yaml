@@ -6,6 +6,7 @@ jobs:
     - checkout: {}
     - docker/build:
         debug: true
+        image: example
 orbs:
   docker: circleci/docker@0.5.20
 version: "2.1"
@@ -13,3 +14,4 @@ workflows:
   orbs-example:
     jobs:
     - docker-build-only: {}
+    - docker/hadolint: {}

@@ -16,6 +16,7 @@ local jobs = {
         .withOrbStep(orbs.docker.steps.build + {
             // https://circleci.com/orbs/registry/orb/circleci/docker#commands-build
             params:: {
+                image: "example",
                 debug: true
             },
         }),

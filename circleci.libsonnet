@@ -17,27 +17,28 @@
         jobs:: {},
         steps:: {},
 
-        __stepOrJob__(name):: {
-            name:: name,
-            ref:: "%s/%s" % [orb.id, name],
+        __refMixin__:: {
+            ref:: "%s/%s" % [orb.id, self.__name__],
             parentOrb:: orb,
+            orbs:: [orb],
         },
 
-        withJob(name):: self + {
+        withJob(name, params = {}):: self + {
             jobs+:: {
-                [name]:: orb.__stepOrJob__(name) + {
+                [name]:: orb.__refMixin__ + {
+                    __name__:: name,
+                    name:: self.ref,
                     params:: {},
-                    orbs:: [orb],
-                    __asTopLevel__(): self.params,
-                    __asWorkflow__(): {},
+                    __asWorkflow__(): self.params,
                 },
             },
         },
 
-        withStep(name):: self + {
-            local this = self,
+        withStep(name, params = {},):: self + {
             steps+:: {
-                [name]:: orb.__stepOrJob__(name) + {
+                [name]:: orb.__refMixin__ + {
+                    __name__:: name,
+                    name:: name,
                     params:: {},
                 },
             },
@@ -203,7 +204,6 @@
             steps+:: [step],
         },
         withOrbStep(step):: self + {
-            orbs+:: [step.parentOrb],
             steps+:: [
                 {
                     [step.ref]: step.params
@@ -258,7 +258,7 @@
             },
             withJob(j):: self + {
                 jobs+: {
-                    [j.name]: j.__asTopLevel__(),
+                    [if std.objectHasAll(j, "__asTopLevel__") then j.name else null]: j.__asTopLevel__(),
                 },
                 orbs+: { [i.id]: i.fullName for i in j.orbs },
                 workflows+: {

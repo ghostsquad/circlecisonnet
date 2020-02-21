@@ -6,13 +6,13 @@ jobs:
     - checkout: {}
     - docker/build:
         debug: true
+        image: example
   goodbye:
     docker:
     - image: circleci/buildpack-deps:buster-dind
     steps:
     - run:
         command: echo "goodbye world"
-  hadolint: {}
   hello:
     docker:
     - image: circleci/buildpack-deps:buster-dind
@@ -28,10 +28,10 @@ workflows:
     - docker-build-only:
         requires:
         - hello
-        - hadolint
+        - docker/hadolint
+    - docker/hadolint: {}
     - goodbye:
         requires:
-        - hadolint
+        - docker/hadolint
         - docker-build-only
-    - hadolint: {}
     - hello: {}
