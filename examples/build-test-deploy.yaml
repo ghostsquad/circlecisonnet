@@ -1,15 +1,21 @@
 jobs:
   docker-build-only:
+    docker:
+    - image: circleci/buildpack-deps:buster-dind
     steps:
     - checkout: {}
     - docker/build:
         debug: true
   goodbye:
+    docker:
+    - image: circleci/buildpack-deps:buster-dind
     steps:
     - run:
         command: echo "goodbye the-big-tamale"
   hadolint: {}
   hello:
+    docker:
+    - image: circleci/buildpack-deps:buster-dind
     steps:
     - run:
         command: echo "hello the-big-tamale"

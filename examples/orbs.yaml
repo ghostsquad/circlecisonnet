@@ -1,5 +1,7 @@
 jobs:
   docker-build-only:
+    docker:
+    - image: debian:buster
     steps:
     - checkout: {}
     - docker/build:

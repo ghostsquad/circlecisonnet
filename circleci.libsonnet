@@ -1,6 +1,10 @@
 {
     mapToArray(o):: [ { [field]: o[field] } for field in std.objectFields(o) ],
 
+    strContains(s, substr):: (
+        std.length(std.findSubstr(substr, s)) > 0
+    ),
+
     orb(id):: {
         local orb = self,
         id:: id,
@@ -186,7 +190,15 @@
         filters_:: null,
         orbs:: [],
         steps:: [],
+        dockerImage:: error "dockerImage required",
+        environment:: {},
 
+        withDockerImage(image):: self + {
+            dockerImage:: image
+        },
+        withEnvironmentVars(vars):: self + {
+            environment:: vars,
+        },
         withStep(step):: self + {
             steps+:: [step],
         },
@@ -200,6 +212,16 @@
         },
         __asTopLevel__():: {
             steps: this.steps,
+            [if this.dockerImage == null then null else "docker"]: [
+                {
+                    image: this.dockerImage,
+                    [if std.length(this.environment) == 0 then null else "environment"]: this.environment,
+                    [if $.strContains(this.dockerImage, "dkr.ecr")  then "auth" else null]: {
+                        aws_access_key_id: "$ECR_AWS_ACCESS_KEY_ID",
+                        aws_secret_access_key: "$ECR_AWS_SECRET_ACCESS_KEY",
+                    },
+                },
+            ],
         },
         __asWorkflow__():: {
             [if this.requires_ == null then null else "requires"]: 

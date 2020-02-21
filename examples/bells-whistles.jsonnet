@@ -11,6 +11,7 @@ local orbs = {
 
 local jobs = {
     dockerBuild: c.job("docker-build-only")
+        .withDockerImage("circleci/buildpack-deps:buster-dind")
         .withStep(c.steps.checkout())
         .withOrbStep(orbs.docker.steps.build + {
             // https://circleci.com/orbs/registry/orb/circleci/docker#commands-build
@@ -21,12 +22,14 @@ local jobs = {
 
     hadolint: orbs.docker.jobs.hadolint,
     hello: c.job("hello")
+        .withDockerImage("circleci/buildpack-deps:buster-dind")
         .withStep(
             c.steps.run() {
                 command_:: 'echo "hello world"'
             },
         ),
     goodbye: c.job("goodbye")
+        .withDockerImage("circleci/buildpack-deps:buster-dind")
         .withStep(
             c.steps.run() {
                 command_:: 'echo "goodbye world"'

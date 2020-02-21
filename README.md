@@ -19,7 +19,7 @@ go get github.com/brancz/gojsontoyaml
 ```
 
 ```bash
-jsonnet --jpath "." ./examples/orbs.jsonnet | gojsontoyaml > ./examples/orbs.yaml
-jsonnet --jpath "." ./examples/bells-whistles.jsonnet | gojsontoyaml > ./examples/bells-whistles.yaml
-jsonnet --jpath "." --jpath "./curated-templates" ./examples/build-test-deploy.jsonnet | gojsontoyaml > ./examples/build-test-deploy.yaml
+make render.examples.orbs
+make render.examples.bells
+make render.examples.curated
 ```

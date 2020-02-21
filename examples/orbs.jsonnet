@@ -11,6 +11,7 @@ local orbs = {
 
 local jobs = {
     dockerBuild: c.job("docker-build-only")
+        .withDockerImage("debian:buster")
         .withStep(c.steps.checkout())
         .withOrbStep(orbs.docker.steps.build + {
             // https://circleci.com/orbs/registry/orb/circleci/docker#commands-build
